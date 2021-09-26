@@ -6,24 +6,21 @@ import (
 	"os"
 )
 
-func NewPlaygroundFromFile(fileName string, cols, lines int) (*Playground, error) {
+func NewPlaygroundFromFile(fileName string, pg *Playground) (*Playground, error) {
 	fd, err := os.Open(fileName)
 	if err != nil {
 		return nil, fmt.Errorf("open file for read only: %w", err)
 	}
 
-	cells := make([][]bool, 0, lines)
-	pg := &Playground{
-		cols:  cols,
-		lines: lines,
-		cells: cells,
-	}
-
 	data := bufio.NewScanner(fd)
 	data.Split(bufio.ScanLines) // split file by lines
+	lineNum := 0                // lines counter
 	for data.Scan() {
-		// todo: make check for line length here
-		currLine := make([]bool, 0, cols)
+		// check whether all lines have provided length
+		if len([]rune(data.Text())) != pg.cols {
+			return nil, fmt.Errorf("line length is not same as provided length. the line:\n%s\nexpected to be %d chars length", data.Text(), pg.cols)
+		}
+		currLine := make([]bool, 0, pg.cols)
 		for _, r := range data.Text() { // read runes one by one
 			switch r {
 			case aliveChar:
@@ -33,8 +30,9 @@ func NewPlaygroundFromFile(fileName string, cols, lines int) (*Playground, error
 			default:
 				return nil, fmt.Errorf("illegal character found:  \n%c\nonly %c,%c,\\n is accepted", r, aliveChar, deadChar)
 			}
+			pg.cells[lineNum] = currLine
 		}
-		pg.cells = append(pg.cells, currLine)
+		lineNum++
 	}
 
 	return pg, nil
