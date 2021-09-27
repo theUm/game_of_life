@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 )
 
@@ -84,38 +85,26 @@ func (pg *Playground) evolute(curVal bool, x, y int) bool {
 }
 
 func main() {
-	//basePG := NewPlayground(5, 5)
-	//pg, err := NewPlaygroundFromFile("3x3.txt", basePG)
-	basePG := NewPlayground(16, 16)
-	pg, err := NewPlaygroundFromFile("centered_glider.txt", basePG)
+	var filePath string
+	var width, height, gens int
+	flag.StringVar(&filePath, "file", "centered_glider.txt", "path to txt file with initial playground state")
+	flag.IntVar(&width, "w", 16, "width of playground in chars")
+	flag.IntVar(&height, "h", 16, "height of playground in chars")
+	flag.IntVar(&gens, "gens", 24, "ticks/generations to run")
+	flag.Parse()
+
+	// init playground
+	basePG := NewPlayground(width, height)
+
+	// populate by file
+	pg, err := NewPlaygroundFromFile(filePath, basePG)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Print(pg.String())
 
-	// todo: put those tests onto test for Alive func
-	//fmt.Println(pg.Alive(-6, 1))
-	//fmt.Println(pg.Alive(-5, 1))
-	//fmt.Println(pg.Alive(-4, 1))
-	//
-	//fmt.Println(pg.Alive(-3, 1))
-	//fmt.Println(pg.Alive(-2, 1))
-	//fmt.Println(pg.Alive(-1, 1))
-	//
-	//fmt.Println(pg.Alive(0, 1))
-	//fmt.Println(pg.Alive(1, 1))
-	//fmt.Println(pg.Alive(2, 1))
-	//
-	//fmt.Println(pg.Alive(3, 1))
-	//fmt.Println(pg.Alive(4, 1))
-	//fmt.Println(pg.Alive(5, 1))
-	//fmt.Println(pg.Alive(5,1))
-
-	//pg.evolute(true, 1, 1)
-	//fmt.Println("")
-
-	// glider should be on bottom by the 24th iteration on 16x16 filed. its damn hard to clear the cli on Windows :/
-	for i := 0; i < 24; i++ {
+	// glider should be on bottom by the 24th iteration on 16x16 filed :/
+	for i := 0; i < gens; i++ {
 		pg.Tick()
 		fmt.Print(pg.String(), "\n")
 	}
