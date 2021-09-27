@@ -88,9 +88,9 @@ func main() {
 	var filePath string
 	var width, height, gens int
 	flag.StringVar(&filePath, "file", "centered_glider.txt", "path to txt file with initial playground state")
-	flag.IntVar(&width, "w", 16, "width of playground in chars")
-	flag.IntVar(&height, "h", 16, "height of playground in chars")
-	flag.IntVar(&gens, "gens", 24, "ticks/generations to run")
+	flag.IntVar(&width, "w", 25, "width of playground in chars")
+	flag.IntVar(&height, "h", 25, "height of playground in chars")
+	flag.IntVar(&gens, "gens", 44, "ticks/generations to run")
 	flag.Parse()
 
 	// init playground
