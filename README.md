@@ -29,3 +29,6 @@ As this is a coding task rather then production code, follow things are not prov
 * some corner cases
 * graceful shutdown
 * linter rules (code is linted)
+
+### benchmark
+`go test -bench=. -benchmem` command will run single glider demo with 100 ticks
